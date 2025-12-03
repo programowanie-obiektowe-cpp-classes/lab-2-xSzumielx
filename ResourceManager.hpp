@@ -7,6 +7,10 @@ public:
     ResourceManager() : resource_(new Resource()) {}
     ~ResourceManager() { delete resource_; }
     ResourceManager(const ResourceManager& other) : resource_(new Resource(*other.resource_)) {}
+    ResourceManager(ResourceManager&& other) : resource_(other.resource_)
+    {
+        other.resource_ = nullptr;
+    }
 
     ResourceManager& operator=(const ResourceManager& other)
     {
@@ -14,6 +18,15 @@ public:
             Resource* fresh = new Resource(*other.resource_);
             delete resource_;
             resource_ = fresh;
+        }
+        return *this;
+    }
+    ResourceManager& operator=(ResourceManager&& other)
+    {
+        if (this != &other) {
+            delete resource_;
+            resource_       = other.resource_;
+            other.resource_ = nullptr;
         }
         return *this;
     }
